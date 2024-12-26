@@ -1,58 +1,64 @@
-# create-svelte
+# Svelte Air Datepicker
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+This library is an adaptation of the Air Datepicker library for working with Svelte and TailwindCSS. The goal was to keep the original implementation as untouched as possible, wrapping it for easier usage and customization.
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+## Usage
 
-## Creating a project
+To use the Air Datepicker, simply import the component from the library and use it in your svelte components and pages!
 
-If you're seeing this, you've probably already done this step. Congrats!
+```html
+<script>
+	import { AirDatepicker } from 'sv-air-datepicker';
+</script>
 
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+<AirDatepicker />
 ```
 
-## Developing
+By default, the datepicker will be bound to a div element unless provided an `el` property.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+```html
+<script lang="ts">
+	import { AirDatepicker } from 'sv-air-datepicker';
 
-```bash
-npm run dev
+	let input = $state<HTMLInputElement>();
+</script>
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+<input bind:this="{input}" />
+<AirDatepicker el="{input}" />
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+### TailwindCSS
+
+To use TailwindCSS stylings with the Air Datepicker, first import the plugin and add it to your tailwind config.
+
+e.g. `tailwind.config.(ts|js)`
+
+```ts
+import plugin from 'sv-air-datepicker/tailwindcss';
+
+export default {
+	//...
+	plugins: [plugin]
+};
+```
+
+Then add your desired classes to the component
+
+```html
+<script lang="ts">
+	import { AirDatepicker } from 'sv-air-datepicker';
+
+	let input = $state<HTMLInputElement>();
+</script>
+
+<input bind:this="{input}" />
+<AirDatepicker el="{input}" class="adp-bg-red-500" />
+```
 
 ## Building
 
-To build your library:
+To build the library:
 
 ```bash
 npm run package
-```
-
-To create a production version of your showcase app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
 ```
