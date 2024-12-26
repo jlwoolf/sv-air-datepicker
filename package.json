@@ -32,6 +32,10 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
+		},
+		"./tailwindcss": {
+			"types": "./dist/tailwindcss/index.d.ts",
+			"svelte": "./dist/tailwindcss/index.js"
 		}
 	},
 	"peerDependencies": {
