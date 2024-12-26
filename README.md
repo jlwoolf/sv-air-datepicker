@@ -4,6 +4,12 @@ This library is an adaptation of the Air Datepicker library for working with Sve
 
 > Because english is my first language, the default locale is set to `en`. This can be changed by passing a different locale prop.
 
+## Installation
+
+```bash
+npm i -D sv-air-datepicker
+```
+
 ## Usage
 
 To use the Air Datepicker, simply import the component from the library and use it in your svelte components and pages!
