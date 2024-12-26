@@ -2,7 +2,7 @@
 
 This library is an adaptation of the Air Datepicker library for working with Svelte and TailwindCSS. The goal was to keep the original implementation as untouched as possible, wrapping it for easier usage and customization.
 
-> Because english is my first language, the default locale is `en`. This can be changed by passing a different locale prop.
+> Because english is my first language, the default locale is set to `en`. This can be changed by passing a different locale prop.
 
 ## Usage
 
