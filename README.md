@@ -8,7 +8,7 @@ This library is an adaptation of the Air Datepicker library for working with Sve
 
 To use the Air Datepicker, simply import the component from the library and use it in your svelte components and pages!
 
-```html
+```svelte
 <script>
 	import { AirDatepicker } from 'sv-air-datepicker';
 </script>
