@@ -16,15 +16,15 @@ To use the Air Datepicker, simply import the component from the library and use 
 
 By default, the datepicker will be bound to a div element unless provided an `el` property.
 
-```html
+```svelte
 <script lang="ts">
 	import { AirDatepicker } from 'sv-air-datepicker';
 
 	let input = $state<HTMLInputElement>();
 </script>
 
-<input bind:this="{input}" />
-<AirDatepicker el="{input}" />
+<input bind:this={input} />
+<AirDatepicker el={input} />
 ```
 
 ### TailwindCSS
@@ -44,15 +44,15 @@ export default {
 
 Then add your desired classes to the component
 
-```html
+```svelte
 <script lang="ts">
 	import { AirDatepicker } from 'sv-air-datepicker';
 
 	let input = $state<HTMLInputElement>();
 </script>
 
-<input bind:this="{input}" />
-<AirDatepicker el="{input}" class="adp-bg-red-500" />
+<input bind:this={input} />
+<AirDatepicker el={input} class="adp-bg-red-500" />
 ```
 
 ## Building
