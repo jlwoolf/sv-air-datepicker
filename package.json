@@ -1,6 +1,6 @@
 {
 	"name": "sv-air-datepicker",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
@@ -35,7 +35,7 @@
 		},
 		"./tailwindcss": {
 			"types": "./dist/tailwindcss/index.d.ts",
-			"svelte": "./dist/tailwindcss/index.js"
+			"import": "./dist/tailwindcss/index.js"
 		}
 	},
 	"peerDependencies": {
