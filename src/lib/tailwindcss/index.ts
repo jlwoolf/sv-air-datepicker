@@ -55,6 +55,7 @@ export default plugin((api) => {
 		});
 	});
 
-	// wrap them all with .air-datepicker class
+	// wrap them all with .air-datepicker class so the tailwind classes
+	// will have higher specificity than the default
 	addUtilities(addParentRule(rules, '.air-datepicker', (k) => `&${k}`));
 });

@@ -37,6 +37,8 @@ export const ADP_COLOR_VARIABLES = {
 	'adp-time-track': '--adp-time-track-color',
 	'adp-time-track-hover': '--adp-time-track-color-hover',
 	'adp-time-day-period': '--adp-time-day-period-color',
+	// the pointer background color is not a variable, so we have
+	// to add a child rule to the select the pointer
 	'adp-ptr-bg': {
 		variable: 'background',
 		function: (e, colors, prefix, variable) => {
@@ -56,6 +58,8 @@ export const ADP_FONT_SIZE_VARIABLES: AdpThemeMappingVariables<'fontSize'> = {
 export const ADP_PADDING_VARIABLES = {
 	'adp-p': '--adp-padding',
 	'adp-time-p': '--adp-time-padding-inner',
+	// we use a custom function that returns an empty object
+	// so we can use matchUtilities for arbitrary pointer sizes
 	'adp-ptr-size': {
 		variable: '--adp-pointer-size',
 		function: ({ matchUtilities }, record, prefix, variable) => {
@@ -65,6 +69,8 @@ export const ADP_PADDING_VARIABLES = {
 				})
 			};
 
+			// this is to make sure we only have size values
+			// 0-8 for the pointer.
 			const values =
 				typeof record === 'function'
 					? {}
@@ -100,6 +106,9 @@ export const ADP_HEIGHT_VARIABLES = {
 
 export const ADP_BORDER_RADIUS_VARIABLES = {
 	'adp-rounded': '--adp-border-radius',
+	// there exists a mis-spelling of the css class --adp-pointer-border-radius
+	// so we include both the current and corrected spelling so the plugin will
+	// still work if the spelling is corrected
 	'adp-ptr-rounded': ['--adp-poiner-border-radius', '--adp-pointer-border-radius'],
 	'adp-cell-rounded': '--adp-cell-border-radius',
 	'adp-btn-rounded': '--adp-btn-border-radius'
