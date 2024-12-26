@@ -10,7 +10,7 @@
 	}
 
 	let { el, class: classNames, ...opts }: AirDatePickerProps = $props();
-	let input = $state<HTMLInputElement>();
+	let div = $state<HTMLDivElement>();
 	let picker: AirDatepicker | undefined;
 
 	$effect(() => {
@@ -22,8 +22,8 @@
 				classes: classNames,
 				...opts
 			});
-		} else if (input) {
-			picker = new AirDatepicker(input, {
+		} else if (div) {
+			picker = new AirDatepicker(div as HTMLInputElement, {
 				locale: localeEn,
 				classes: classNames,
 				...opts
@@ -33,7 +33,7 @@
 </script>
 
 {#if !el}
-	<input bind:this={input} />
+	<div bind:this={div} ></div>
 {/if}
 
 <style>

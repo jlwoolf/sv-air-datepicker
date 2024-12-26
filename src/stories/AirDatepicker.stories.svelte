@@ -14,6 +14,8 @@
 
 	let div = $state<HTMLDivElement>();
 	let input = $state<HTMLInputElement>();
+	let inlineInput = $state<HTMLInputElement>();
+	let mobileInput = $state<HTMLInputElement>();
 
 	let tailwindDiv = $state<HTMLDivElement>();
 	let normalDiv = $state<HTMLDivElement>();
@@ -30,7 +32,10 @@
 	<div bind:this={div}><AirDatepicker el={div} /></div>
 </Story>
 
-<Story name="Inline" args={{ inline: true }} />
+<Story name="Inline">
+	<input bind:this={inlineInput} />
+	<AirDatepicker el={inlineInput} inline />
+</Story>
 
 <Story name="Select date on initialization" args={{ inline: true, selectedDates: [new Date()] }} />
 
@@ -44,13 +49,10 @@
 	}}
 />
 
-<Story
-	name="Mobile devices mode"
-	args={{
-		isMobile: true,
-		autoClose: true
-	}}
-/>
+<Story name="Mobile devices mode">
+	<input bind:this={mobileInput} />
+	<AirDatepicker el={mobileInput} isMobile autoClose />
+</Story>
 
 <Story name="With TailwindCSS">
 	<div class="flex gap-2">
