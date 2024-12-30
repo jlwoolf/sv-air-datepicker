@@ -7,11 +7,12 @@
 		/** an html element to bind the picker to */
 		el?: HTMLElement;
 		class?: string;
+		/** the actual air datepicker instance for direct manipulation */
+		picker?: AirDatepicker;
 	}
 
-	let { el, class: classNames, ...opts }: AirDatePickerProps = $props();
+	let { el, class: classNames, picker = $bindable(), ...opts }: AirDatePickerProps = $props();
 	let div = $state<HTMLDivElement>();
-	let picker: AirDatepicker | undefined;
 
 	$effect(() => {
 		if (picker) picker.destroy();
@@ -33,7 +34,7 @@
 </script>
 
 {#if !el}
-	<div bind:this={div} ></div>
+	<div bind:this={div}></div>
 {/if}
 
 <style>
