@@ -16,13 +16,16 @@ export const recursiveMapping = (
 	api: PluginAPI,
 	record: ResolvableTo<RecursiveKeyValuePair<string, string>>,
 	prefix: string,
-	variable: string | string[]
+	variable: string | string[],
+	preprocess?: (value: string) => string
 ): CSSRuleObject => {
 	const { e } = api;
 	if (typeof record === 'function') return {};
 
 	return Object.entries(record).reduce((acc, [key, value]) => {
 		if (typeof value === 'string') {
+			if (preprocess) value = preprocess(value);
+
 			return {
 				...acc,
 				[`${prefix}-${e(key)}`]: multiVariable(variable, value)

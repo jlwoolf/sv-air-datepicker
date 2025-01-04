@@ -9,11 +9,12 @@ import {
 	ADP_BORDER_RADIUS_VARIABLES
 } from './variables';
 import { recursiveMapping, fontSizeMapping, recordMapping, addParentRule } from './functions';
-import type { AdpThemeMapping, AdpThemeMappingVariables } from './types';
+import type { AdpThemeMapping, AdpThemeMappingFunction, AdpThemeMappingVariables } from './types';
 
 const ADP_THEME_MAPPING = {
 	colors: {
-		function: recursiveMapping,
+		function: (...args: Parameters<AdpThemeMappingFunction<'colors'>>) =>
+			recursiveMapping(...args, (value) => value.replace('<alpha-value>', '1')),
 		variables: ADP_COLOR_VARIABLES
 	},
 	fontSize: {
