@@ -6,8 +6,6 @@ import type {
 } from 'tailwindcss/types/config';
 import {
 	type AdpThemeValueFunction,
-	type AdpThemeVariableProperties,
-	type AdpThemeVariables,
 	type AdpThemeMatchFunction,
 	isAdpThemeVariable,
 	isPluginFunction,
