@@ -1,5 +1,5 @@
 import { addChildRule, multiVariable, recursiveMapping } from './functions';
-import type { AdpThemeMappingVariables } from './types';
+import { isPluginFunction, type AdpThemeVariables } from './types';
 
 export const ADP_COLOR_VARIABLES = {
 	'adp-bg': '--adp-background-color',
@@ -41,16 +41,16 @@ export const ADP_COLOR_VARIABLES = {
 	// to add a child rule to the select the pointer
 	'adp-ptr-bg': {
 		variable: 'background',
-		function: (e, colors, prefix, variable) => {
+		valueFn: (e, colors, prefix, variable) => {
 			return addChildRule(
 				recursiveMapping(e, colors, `.${prefix}`, variable),
 				'& > .air-datepicker--pointer:after'
 			);
 		}
 	}
-} satisfies AdpThemeMappingVariables<'colors'>;
+} satisfies AdpThemeVariables<'colors'>;
 
-export const ADP_FONT_SIZE_VARIABLES: AdpThemeMappingVariables<'fontSize'> = {
+export const ADP_FONT_SIZE_VARIABLES: AdpThemeVariables<'fontSize'> = {
 	'adp-text': '--adp-font-size',
 	'adp-text-mbl': '--adp-mobile-font-size'
 };
@@ -62,7 +62,9 @@ export const ADP_PADDING_VARIABLES = {
 	// so we can use matchUtilities for arbitrary pointer sizes
 	'adp-ptr-size': {
 		variable: '--adp-pointer-size',
-		function: ({ matchUtilities }, record, prefix, variable) => {
+		valueFn: ({ matchUtilities }, record, prefix, variable) => {
+			if (!prefix) return {};
+
 			const pointerSize = {
 				[prefix]: (value: string) => ({
 					'&.air-datepicker': multiVariable(variable, value)
@@ -71,25 +73,24 @@ export const ADP_PADDING_VARIABLES = {
 
 			// this is to make sure we only have size values
 			// 0-8 for the pointer.
-			const values =
-				typeof record === 'function'
-					? {}
-					: Object.fromEntries(
-							Object.entries(record).filter(([k, v]) => !Number.isNaN(k) && Number(k) < 9)
-						);
+			const values = isPluginFunction(record)
+				? {}
+				: Object.fromEntries(
+						Object.entries(record).filter(([k, v]) => !Number.isNaN(k) && Number(k) < 9)
+					);
 
 			matchUtilities(pointerSize, { values });
 
 			return {};
 		}
 	}
-} satisfies AdpThemeMappingVariables<'padding'>;
+} satisfies AdpThemeVariables<'padding'>;
 
 export const ADP_WIDTH_VARIABLES = {
 	'adp-w': '--adp-width',
 	'adp-day-cell-w': '--adp-day-cell-width',
 	'adp-mbl-w': '--adp-mobile-width'
-} satisfies AdpThemeMappingVariables<'width'>;
+} satisfies AdpThemeVariables<'width'>;
 
 export const ADP_HEIGHT_VARIABLES = {
 	'adp-nav-h': '--adp-nav-height',
@@ -102,7 +103,7 @@ export const ADP_HEIGHT_VARIABLES = {
 	'adp-mbl-day-cell-h': '--adp-mobile-day-cell-height',
 	'adp-mbl-month-cell-h': '--adp-mobile-month-cell-height',
 	'adp-mbl-year-cell-h': '--adp-mobile-year-cell-height'
-} satisfies AdpThemeMappingVariables<'height'>;
+} satisfies AdpThemeVariables<'height'>;
 
 export const ADP_BORDER_RADIUS_VARIABLES = {
 	'adp-rounded': '--adp-border-radius',
@@ -112,4 +113,4 @@ export const ADP_BORDER_RADIUS_VARIABLES = {
 	'adp-ptr-rounded': ['--adp-poiner-border-radius', '--adp-pointer-border-radius'],
 	'adp-cell-rounded': '--adp-cell-border-radius',
 	'adp-btn-rounded': '--adp-btn-border-radius'
-} satisfies AdpThemeMappingVariables<'borderRadius'>;
+} satisfies AdpThemeVariables<'borderRadius'>;

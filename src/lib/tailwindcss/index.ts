@@ -8,55 +8,114 @@ import {
 	ADP_HEIGHT_VARIABLES,
 	ADP_BORDER_RADIUS_VARIABLES
 } from './variables';
-import { recursiveMapping, fontSizeMapping, recordMapping, addParentRule } from './functions';
-import type { AdpThemeMapping, AdpThemeMappingFunction, AdpThemeMappingVariables } from './types';
+import {
+	recursiveMapping,
+	fontSizeMapping,
+	recordMapping,
+	addParentRule,
+	parentMatching
+} from './functions';
+import {
+	isAdpThemeVariable,
+	type AdpThemeItem,
+	type AdpThemeMap,
+	type AdpThemeValueFunction,
+	type AdpThemeVariable,
+	type AdpThemeVariableProperties,
+	type AdpThemeVariables
+} from './types';
 
-const ADP_THEME_MAPPING = {
+const defaultMatchFunction = parentMatching('&.air-datepicker');
+
+const ADP_THEME_MAPPING: AdpThemeMap = {
 	colors: {
-		function: (...args: Parameters<AdpThemeMappingFunction<'colors'>>) =>
+		valueFn: (...args: Parameters<AdpThemeValueFunction<'colors'>>) =>
 			recursiveMapping(...args, (value) => value.replace('<alpha-value>', '1')),
+		matchFn: defaultMatchFunction,
+		matchOptions: {
+			type: 'color'
+		},
 		variables: ADP_COLOR_VARIABLES
 	},
 	fontSize: {
-		function: fontSizeMapping,
+		valueFn: fontSizeMapping,
+		matchFn: defaultMatchFunction,
 		variables: ADP_FONT_SIZE_VARIABLES
 	},
 	padding: {
-		function: recordMapping,
+		valueFn: recordMapping,
+		matchFn: defaultMatchFunction,
 		variables: ADP_PADDING_VARIABLES
 	},
 	width: {
-		function: recordMapping,
+		valueFn: recordMapping,
+		matchFn: defaultMatchFunction,
 		variables: ADP_WIDTH_VARIABLES
 	},
 	height: {
-		function: recordMapping,
+		valueFn: recordMapping,
+		matchFn: defaultMatchFunction,
 		variables: ADP_HEIGHT_VARIABLES
 	},
 	borderRadius: {
-		function: recordMapping,
+		valueFn: recordMapping,
+		matchFn: defaultMatchFunction,
 		variables: ADP_BORDER_RADIUS_VARIABLES
 	}
-} satisfies AdpThemeMapping;
+};
 
-export default plugin((api) => {
-	const { theme, addUtilities, matchUtilities } = api;
+/**
+ * Utility function to create entries array of specified key value pairs
+ * @param obj an object
+ * @returns Object.entries(obj)
+ */
+const entries = <K = any, V = any>(obj: object) => Object.entries(obj) as [K, V][];
 
-	const rules: CSSRuleObject[] = [];
-	Object.entries(ADP_THEME_MAPPING).forEach(([key, { function: f, variables }]) => {
-		const record = theme(key);
+/**
+ * Processes a key value of the AdpThemeMap
+ * @param api the plugin api
+ */
+const processThemeItem =
+	(api: PluginAPI) =>
+	<K extends keyof ThemeConfig>([key, { variables, ...properties }]: [K, AdpThemeItem<K>]) => {
+		if (key !== 'colors') return;
+
+		const record: ThemeConfig[K] = api.theme(key);
 		if (!record) return;
 
-		Object.entries(variables as AdpThemeMappingVariables).forEach(([p, v]) => {
-			if (typeof v === 'string' || Array.isArray(v)) {
-				rules.push(f(api, record, `.${p}`, v));
+		Object.entries(variables as AdpThemeVariables).forEach(([p, v]) => {
+			const applyUtilities = (
+				variable: AdpThemeVariable,
+				{ valueFn, matchFn, matchOptions }: AdpThemeVariableProperties<K>
+			) => {
+				if (matchFn) {
+					api.matchUtilities(
+						{
+							[p]: matchFn(api, record, p, variable)
+						},
+						matchOptions
+					);
+				}
+
+				if (valueFn) {
+					api.addUtilities(
+						addParentRule(
+							valueFn(api, record, `.${p}`, variable),
+							'.air-datepicker',
+							(k) => `&${k}`
+						)
+					);
+				}
+			};
+
+			if (!isAdpThemeVariable(v)) {
+				applyUtilities(v.variable, v);
 			} else {
-				rules.push(v.function(api, record, p, v.variable));
+				applyUtilities(v, properties);
 			}
 		});
-	});
+	};
 
-	// wrap them all with .air-datepicker class so the tailwind classes
-	// will have higher specificity than the default
-	addUtilities(addParentRule(rules, '.air-datepicker', (k) => `&${k}`));
+export default plugin((api) => {
+	entries<keyof ThemeConfig, AdpThemeItem>(ADP_THEME_MAPPING).forEach(processThemeItem(api));
 });

@@ -6,25 +6,45 @@ import type {
 	PluginUtils
 } from 'tailwindcss/types/config';
 
-export type AdpThemeMappingVariable = string | string[];
-export type AdpThemeMappingVariables<K extends keyof ThemeConfig = keyof ThemeConfig> = Record<
+export type AdpThemeVariable = string | string[];
+export interface AdpThemeVariableProperties<K extends keyof ThemeConfig = keyof ThemeConfig> {
+	valueFn?: AdpThemeValueFunction<K>;
+	matchFn?: AdpThemeMatchFunction<K>;
+	matchOptions?: Parameters<PluginAPI['matchUtilities']>[1];
+}
+export type AdpThemeVariables<K extends keyof ThemeConfig = keyof ThemeConfig> = Record<
 	string,
-	| AdpThemeMappingVariable
-	| { variable: AdpThemeMappingVariable; function: AdpThemeMappingFunction<K> }
+	AdpThemeVariable | ({ variable: AdpThemeVariable } & AdpThemeVariableProperties<K>)
 >;
 
-export type AdpThemeMappingFunction<K extends keyof ThemeConfig> = (
+export type AdpThemeValueFunction<K extends keyof ThemeConfig = keyof ThemeConfig> = (
 	api: PluginAPI,
 	record: ThemeConfig[K],
 	prefix: string,
-	variable: AdpThemeMappingVariable
+	variable: AdpThemeVariable
 ) => CSSRuleObject;
 
-export interface AdpThemeMappingItem<K extends keyof ThemeConfig> {
-	function: AdpThemeMappingFunction<K>;
-	variables: AdpThemeMappingVariables<K>;
+export type AdpThemeMatchFunction<K extends keyof ThemeConfig = keyof ThemeConfig> = (
+	api: PluginAPI,
+	record: ThemeConfig[K],
+	prefix: string,
+	variable: AdpThemeVariable
+) => <T = string, U = string>(
+	value: T | string,
+	extra: { modifier: U | string | null }
+) => CSSRuleObject | null;
+
+export interface AdpThemeItem<K extends keyof ThemeConfig = keyof ThemeConfig>
+	extends AdpThemeVariableProperties<K> {
+	variables: AdpThemeVariables<K>;
 }
 
-export type AdpThemeMapping = {
-	[K in keyof ThemeConfig]?: AdpThemeMappingItem<K>;
+export type AdpThemeMap = {
+	[K in keyof ThemeConfig]?: AdpThemeItem<K>;
 };
+
+export const isString = (x: unknown): x is string => typeof x === 'string';
+export const isAdpThemeVariable = (x: unknown): x is AdpThemeVariable =>
+	isString(x) || (Array.isArray(x) && x.every((y) => isString(y)));
+export const isPluginFunction = <T>(x: ResolvableTo<T>): x is (utils: PluginUtils) => T =>
+	typeof x === 'function';
